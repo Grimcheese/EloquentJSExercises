@@ -36,3 +36,81 @@ function sum(numbers) {
     }
     return sum;
 }
+
+function reverseArray(inArray) {
+    /** Create a new array with the same elements of inArray but reversed. */
+    reversedArray = [];
+    let revIndex = inArray.length - 1;
+    let index = 0;
+    do {
+        reversedArray[index] = inArray[revIndex];
+        index++;
+        revIndex--;
+    } while (revIndex >= 0)
+    return reversedArray;
+}
+
+function reverseArrayInPlace(inArray) {
+    /** Reverse the inArray array. */
+    let length = inArray.length;
+    swaps = Math.floor(length / 2);
+    for (let i = 0; i < swaps; i++) {
+        let temp = inArray[i];
+        inArray[i] = inArray[length - 1 - i];
+        inArray[length - 1 - i] = temp;
+    }
+}
+
+function arrayToList(inArray) {
+    let list = {};
+    if (inArray.length > 1) {
+        list = {
+            value: inArray[0],
+            rest: arrayToList(inArray.slice(1))
+        };
+    } else {
+        list = {
+            value: inArray[0],
+            rest: null
+        };
+    }
+    return list;
+}
+
+function listToArray(inList) {
+    let nextList = inList.rest;
+    let value = inList.value;
+    let i = 0;
+    let newArr = [];
+
+    while (nextList != null) {
+        newArr[i] = value;
+        value = nextList.value;
+        nextList = nextList.rest;
+        i++;
+    }
+    newArr[i] = value;
+    return newArr;
+}
+
+function prepend(element, list) {
+    let newList = {
+        value: element,
+        rest: list
+    };
+    return newList;
+}
+
+function nth(n, list) {
+    let result;
+    if (n > 0) {
+        if (list.rest != null) {
+            result = nth(n - 1, list.rest);
+        } else {
+            result = undefined;
+        }
+    } else {
+        result = list.value;
+    }
+    return result
+}

@@ -1,0 +1,9 @@
+If difference == odd && step == even
+    Too many elements
+If difference == even && step == even 
+    Not enough elements
+
+If difference == odd && step == odd
+    Works
+If difference == even && step == odd
+    Not enough elements
