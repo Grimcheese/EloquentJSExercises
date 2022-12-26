@@ -60,3 +60,50 @@ class Vec {
         return resultVector;
     }
 }
+
+/** Exercise 2: Groups ---------------------------------------------------------
+ * 
+ *  Write a Group class that is similar to the standard Set class.
+ * 
+ *  Required methods:
+ *      add, delete, has, from
+ */
+
+class Group {
+    /** Class that that contains a unique set of elements. */
+
+    constructor() {
+        /** Initalise an empty group. */
+        this.values = [];
+    }
+
+    add(newValue) {
+        /** Add a value to the group if not already present. */
+
+        if (this.has(newValue) === false) {
+            this.values.push(newValue)
+        }
+    }
+
+    delete(newValue) {
+        /** Remove value from the group if it exists. */
+
+        for (let i = 0; i < this.values.length; i++) {
+            if (this.values[i] === newValue) {
+                this.values.splice(i, 1); // Remove one element at i
+            }
+        }
+    }
+
+    has(value) {
+        /** Check if value is in the group */
+
+        for (element of this.values) {
+            if (value === element) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
