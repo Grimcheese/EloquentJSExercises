@@ -98,12 +98,25 @@ class Group {
     has(value) {
         /** Check if value is in the group */
 
-        for (element of this.values) {
+        for (let element of this.values) {
             if (value === element) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    static from(object) {
+        /** Creates a new group using the elements from object.
+         * 
+         * object must be an interable type of object
+         */
+
+        let newGroup = new Group();
+        for (let element of object) {
+            newGroup.add(element);
+        }
+        return newGroup;
     }
 }
