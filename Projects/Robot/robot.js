@@ -8,6 +8,13 @@ const roads = [
     "Marketplace-Town Hall", "Shop-Town Hall"
 ];
 
+const mailRoute = [
+    "Alice's House", "Cabin", "Alice's House", "Bob's House",
+    "Town Hall", "Daria's House", "Ernie's House",
+    "Grete's House", "Shop", "Grete's House", "Farm",
+    "Marketplace", "Post Office"
+]
+
 function buildGraph(edges) {
     let graph = Object.create(null);
 
@@ -45,7 +52,7 @@ class VillageState {
 }
 
 VillageState.random = function (parcelCount = 5) {
-    let parcels = {};
+    let parcels = [];
     for (let i = 0; i < parcelCount; i++) {
         let address = randomPick(Object.keys(roadGraph));
         let place;
@@ -56,10 +63,10 @@ VillageState.random = function (parcelCount = 5) {
         parcels.push({ place, address });
     }
     return new VillageState("Post Office", parcels);
-}
+};
 
 function runRobot(state, robot, memory) {
-    for (let turn = 0; ; i++) {
+    for (let turn = 0; ; turn++) {
         if (state.parcels.length == 0) {
             console.log(`Done in ${turn} turns`);
             break;
@@ -76,9 +83,21 @@ function randomPick(array) {
     return array[choice];
 }
 
+/** Robot route functions */
+
 function randomRobot(state) {
+    /** Pick a random direction each turn */
+
     return { direction: randomPick(roadGraph[state.place]) };
 }
 
+function routeRobot(state, memory) {
+    /** Have the robot follow a specified route */
+    if (memory.length == 0) {
+        memory = mailRoute;
+    }
+    return { direction: memory[0], memory: memory.slice(1) };
+}
+
 const roadGraph = buildGraph(roads);
-runRobot(VillageState.random(), randomRobot);
+// runRobot(VillageState.random(), randomRobot);
