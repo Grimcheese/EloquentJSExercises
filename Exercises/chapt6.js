@@ -120,3 +120,26 @@ class Group {
         return newGroup;
     }
 }
+
+class GroupIterator {
+    constructor(group) {
+        this.index = 0;
+        this.group = group;
+    }
+
+    next() {
+        /** Go to the next element or return done: true */
+
+        if (this.index === this.group.values.length) {
+            return { done: true };
+        }
+        let value = this.group.values[this.index];
+        this.index++;
+
+        return { value, done: false };
+    }
+}
+
+Group.prototype[Symbol.iterator] = function () {
+    return new GroupIterator(this);
+};
