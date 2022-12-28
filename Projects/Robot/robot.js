@@ -171,3 +171,38 @@ function compareRobots(robotOne, robotTwo) {
 
     console.log(`Robot one average time: ${r1Average}, robot two average time: ${r2Average}`);
 }
+
+/** Robot Efficiency
+ * 
+ * Write a robot that is faster than goalOrientedRobot
+ * 
+ * Alg: Collect all parcels and then search through list - dropping off on the way
+ */
+
+function findNextParcel(state, start) {
+    let possibleRoutes = [];
+    for (let i = 0; i < state.parcels.length; i++) {
+        possibleRoutes[i] = findRoute(roadGraph, start, state.parcels[i].place)
+    }
+    return possibleRoutes.reduce((r1, r2) => {
+        return r1.length < r2.length ? r2 : r1
+    })
+}
+
+function fastRobot(state, route) {
+    if (route == 0 && state.parcels.length > 0) {
+        route = findRoute(roadGraph, state.place, state.parcels[0].address)
+        let startDest = state.parcels[0].address;
+        for (let i = 1; i < 5; i++) {
+            route.push(findRoute(roadGraph, startDest, state.parcels[i].address));
+            startDest = state.parcels[i].address;
+        }
+
+        for (let i = 0; i < 5; i++) {
+            route.push(findRoute(roadGraph, startDest, state.parcels[i].address));
+            startDest = state.parcels[i].address;
+        }
+        //console.log(`Parcels: ${state.parcels} . Route: ${route}`);
+    }
+    return { direction: route[0], memory: route.slice(1) };
+}
