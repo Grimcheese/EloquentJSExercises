@@ -69,7 +69,7 @@ function runRobot(state, robot, memory) {
     for (let turn = 0; ; turn++) {
         if (state.parcels.length == 0) {
             console.log(`Done in ${turn} turns`);
-            break;
+            return turn;
         }
         let action = robot(state, memory);
         state = state.move(action.direction);
@@ -78,9 +78,33 @@ function runRobot(state, robot, memory) {
     }
 }
 
+/** Route helper functions random and find */
+
 function randomPick(array) {
     let choice = Math.floor(Math.random() * array.length);
     return array[choice];
+}
+
+function findRoute(graph, from, to) {
+    // work: the route to be worked on through iteration
+    let work = [{ at: from, route: [] }];
+
+    // Continue looping through work until to is found
+    for (let i = 0; i < work.length; i++) {
+        // Initalise current location and route using work
+        let { at, route } = work[i];
+
+        // Loop through each edge attached to current place on graph
+        for (let place of graph[at]) {
+            if (place == to) return route.concat(place); // Found place - return the route
+
+            // Find if some element of work was at place
+            // If not yet searched this place - add to work
+            if (!work.some(w => w.at == place)) {
+                work.push({ at: place, route: route.concat(place) });
+            }
+        }
+    }
 }
 
 /** Robot route functions */
@@ -93,11 +117,57 @@ function randomRobot(state) {
 
 function routeRobot(state, memory) {
     /** Have the robot follow a specified route */
+
     if (memory.length == 0) {
         memory = mailRoute;
     }
     return { direction: memory[0], memory: memory.slice(1) };
 }
 
+function goalOrientedRobot({ place, parcels }, route) {
+    /** Robot will find a route to deliver each parcel */
+
+    if (route.length == 0) {
+        let parcel = parcels[0];
+        if (parcel.place != place) {
+            route = findRoute(roadGraph, place, parcel.place);
+        } else {
+            route = findRoute(roadGraph, place, parcel.address);
+        }
+    }
+    return { direction: route[0], memory: route.slice(1) };
+}
+
 const roadGraph = buildGraph(roads);
 // runRobot(VillageState.random(), randomRobot);
+//runRobot(VillageState.random(), goalOrientedRobot)
+
+/** Exercises section of Robot Project ---------------------------------
+ * 
+ * */
+
+/** Measuring a Robot
+ * 
+ * Write a function compareRobots that compares the time it takes for two 
+ * different robots to complete the same set of tasks. Create a set of 100 
+ * different scenarios and compare against each.
+ */
+
+function compareRobots(robotOne, robotTwo) {
+    /** Compare the effectiveness of two different robots against the same set of tasks
+     * 
+     */
+
+    let r1Results = [];
+    let r2Results = [];
+    for (let i = 0; i < 100; i++) {
+        let scenario = VillageState.random();
+
+        r1Results.push(runRobot(scenario, robotOne, []));
+        r2Results.push(runRobot(scenario, robotTwo, []));
+    }
+    r1Average = r1Results.reduce((a, b) => a + b, 0) / 100;
+    r2Average = r2Results.reduce((a, b) => a + b, 0) / 100;
+
+    console.log(`Robot one average time: ${r1Average}, robot two average time: ${r2Average}`);
+}
